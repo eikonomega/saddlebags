@@ -1,0 +1,7 @@
+{
+  "primary": {
+      "url": "ldaps://primaryldap.example.edu:111",
+      "login": "cn=LDAP Testing",
+      "password": "LDAP Password"
+  }
+}

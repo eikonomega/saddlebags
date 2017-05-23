@@ -1,0 +1,13 @@
+---
+Thomas:
+  addresses:
+    - thomas-is-great@example.com
+---
+Newt:
+  addresses:
+    - newt-is-great@example.com
+---
+Minho:
+  addresses:
+    - minho-is-great@example.com
+
