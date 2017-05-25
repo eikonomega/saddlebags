@@ -3,22 +3,6 @@ jobs:
   build:
     working_directory: ~/saddlebags
     docker:
-      - image: python:3.4
-    steps:
-      - checkout
-      - run: pip install -r requirements.txt
-      - run: pytest
-  build:
-  working_directory: ~/saddlebags
-  docker:
-    - image: python:3.5
-  steps:
-    - checkout
-    - run: pip install -r requirements.txt
-    - run: pytest
-  build:
-    working_directory: ~/saddlebags
-    docker:
       - image: python:3.6
     steps:
       - checkout
