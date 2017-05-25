@@ -151,5 +151,3 @@ class TestSaddlebag(TestCase):
             "'login': 'cn=LDAP Testing', 'password': 'LDAP Password'}}, "
             "'smtp-settings': {'TestAccount1': {'url': 'smtp.yourschool.edu', "
             "'login': 'testaccount1', 'password': 'testaccount1password'}}}")
-
-        assert False
