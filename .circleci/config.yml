@@ -6,4 +6,5 @@ jobs:
       - image: python:3.6
     steps:
       - checkout
-      - run: echo "hello world"
+      - run: pip install -r requirements.txt
+      - run: pyenv
