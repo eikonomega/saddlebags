@@ -7,6 +7,6 @@ jobs:
     steps:
       - checkout
       - run: pip install -r requirements.txt
-      - run: pytest
+      - run: pytest > test-reports
       - store_test_results:
           path: test-reports/
