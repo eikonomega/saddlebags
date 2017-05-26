@@ -9,4 +9,4 @@ jobs:
       - run: pip install -r requirements.txt
       - run: pytest
       - store_test_results:
-        path: test-reports/
+          path: test-reports/
