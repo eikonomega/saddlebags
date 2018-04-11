@@ -3,8 +3,8 @@ from unittest import TestCase
 
 import pytest
 
-from ..saddlebag import Saddlebag
-from ..exceptions import (
+from saddlebags import Saddlebag
+from saddlebags.exceptions import (
     DuplicateConfigurationFile,
     MalformedConfigurationFile)
 
@@ -34,7 +34,7 @@ class TestSaddlebag(TestCase):
         The Saddlebag object constructor will load environment variables
         onto the `env` object attribute but NOT using element access notation.
         """
-        saddlebag = Saddlebag()
+        saddlebag = Saddlebag(strict=False)
         assert saddlebag.env == os.environ
         assert saddlebag['env'] is None
 
@@ -71,7 +71,7 @@ class TestSaddlebag(TestCase):
                 ['JSON_CONFIGURATION_FILES',
                  'DUPLICATE_CONFIGURATION_FILES'])
 
-    def test__load_data_onto_attributes(self):
+    def test__load_configuration_file(self):
         """
         Validate that a Saddlebag object's data matches
         loaded configuration files.
@@ -101,27 +101,42 @@ class TestSaddlebag(TestCase):
         assert saddlebag['email'][2]['Minho'] == {
             'addresses': ['minho-is-great@example.com']}
 
-    def test__load_data_onto_attributes_with_malformed_json_files(self):
+    def test__load_configuration_file_with_malformed_json_files(self):
         """
-        `_load_data_onto_attribute` will raise a
+        `_load_configuration_file` will raise a
         MalformedConfigurationFile exception if a JSON
         configuration file is found to have syntax errors.
         """
         with pytest.raises(MalformedConfigurationFile):
             Saddlebag(['INVALID_JSON_FILES'])
 
-    def test__load_data_onto_attributes_with_malformed_yaml_files(self):
+    def test__load_configuration_file_with_malformed_yaml_files(self):
         """
-        `_load_data_onto_attribute` will raise a
+        `_load_configuration_file` will raise a
         MalformedConfigurationFile exception if a YAML
         configuration file is found to have syntax errors.
         """
         with pytest.raises(MalformedConfigurationFile):
             Saddlebag(['INVALID_YAML_FILES'])
 
+    def test_key_retrieval_in_stict_mode(self):
+        """A KeyError is raised when attempting to retrieve a non-existent key."""
+        saddlebag = Saddlebag(['JSON_CONFIGURATION_FILES',
+                               'SINGLE_DOCUMENT_YAML_FILES'])
+
+        with pytest.raises(KeyError):
+            saddlebag['nonexistentKey']
+
+    def test_key_retrieval_in_non_stict_mode(self):
+        """None is returned when attempting to retrieve a non-existent key."""
+        saddlebag = Saddlebag(
+            ['JSON_CONFIGURATION_FILES', 'SINGLE_DOCUMENT_YAML_FILES'],
+            strict=False)
+
+        assert not saddlebag['nonexistentKey']
+
     def test_object_iterability(self):
         """You can iterate a Saddlebag object."""
-
         saddlebag = Saddlebag(['JSON_CONFIGURATION_FILES',
                                'SINGLE_DOCUMENT_YAML_FILES'])
         for _ in saddlebag:
@@ -130,10 +145,12 @@ class TestSaddlebag(TestCase):
     def test_object_deletion_mutability(self):
         """You can delete items from a Saddlebag object."""
 
-        saddlebag = Saddlebag(['JSON_CONFIGURATION_FILES',
-                               'SINGLE_DOCUMENT_YAML_FILES'])
+        saddlebag = Saddlebag(
+            ['JSON_CONFIGURATION_FILES', 'SINGLE_DOCUMENT_YAML_FILES'],
+            strict=False)
         assert saddlebag['ldap']
         del saddlebag['ldap']
+
         assert saddlebag['ldap'] is None
 
     def test_object_len(self):

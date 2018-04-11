@@ -19,7 +19,9 @@ class Saddlebag(collections.MutableMapping):
     files using standard dictionary style syntax.
     """
 
-    def __init__(self, configuration_locations: list=None):
+    def __init__(self,
+                 configuration_locations: list=None,
+                 strict: str=True):
         """
         The constructor creates an top-level key for each
         configuration file found in the directories specified by
@@ -31,7 +33,11 @@ class Saddlebag(collections.MutableMapping):
         Args:
             configuration_locations: List of environment variables
                 which point to directories containing configuration files.
+            strict: If True, instances will raise an 
+                exception if requested data is not present.
         """
+        self.raise_on_missing_data = strict
+
         self.env = os.environ
         self._data = dict()
         if not configuration_locations:
@@ -47,9 +53,18 @@ class Saddlebag(collections.MutableMapping):
                 configuration_file).group(1)
 
             self._check_for_name_collision(key_name)
-            self._load_data_onto_attribute(key_name, configuration_file)
+            self._load_configuration_file(key_name, configuration_file)
 
     def __getitem__(self, key: str):
+        if self.raise_on_missing_data:
+            try:
+                return self._data[key.lower()]
+            except KeyError:
+                raise KeyError(
+                    "The requested key '{}' does not exist. This most likely "
+                    "indicates that you anticipated a configuration file "
+                    "being loaded that actually hasn't been.".format(key))
+
         return self._data.get(key.lower())
 
     def __setitem__(self, key: str, value):
@@ -103,12 +118,17 @@ class Saddlebag(collections.MutableMapping):
              DuplicationConfigurationFile: If another configuration file
                 of the same name has already been loaded onto the file.
         """
-        if self[key]:
+        try:
+            existing_key = self[key]
+        except KeyError:
+            existing_key = None
+
+        if existing_key:
             raise exceptions.DuplicateConfigurationFile(
                 "Two configuration files share the following name "
                 "{}.  This is not allowed.".format(key))
 
-    def _load_data_onto_attribute(self, attribute_name, configuration_file):
+    def _load_configuration_file(self, attribute_name, configuration_file):
         with open(configuration_file) as configuration_data:
             file_extension = configuration_file.partition('.')[2].lower()
 
