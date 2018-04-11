@@ -4,7 +4,7 @@ setup(
     name="saddlebags",
     license="MIT",
     packages=find_packages(),
-    version='1.3',
+    version='1.3.1',
     author="Michael Dunn",
     author_email="mike@eikonomega.com",
     keywords='configuration settings',
