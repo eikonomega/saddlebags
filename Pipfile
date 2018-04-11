@@ -10,6 +10,8 @@ PyYAML = "==3.12"
 pytest = "==3.0.7"
 pytest-cov = "*"
 ipython = "*"
+wheel = "*"
+twine = "*"
 
 [requires]
 python_version = "3.6"

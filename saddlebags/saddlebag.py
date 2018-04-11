@@ -36,7 +36,7 @@ class Saddlebag(collections.MutableMapping):
             strict: If True, instances will raise an 
                 exception if requested data is not present.
         """
-        self.raise_on_missing_data = strict
+        self.strict = strict
 
         self.env = os.environ
         self._data = dict()
@@ -56,7 +56,7 @@ class Saddlebag(collections.MutableMapping):
             self._load_configuration_file(key_name, configuration_file)
 
     def __getitem__(self, key: str):
-        if self.raise_on_missing_data:
+        if self.strict:
             try:
                 return self._data[key.lower()]
             except KeyError:
