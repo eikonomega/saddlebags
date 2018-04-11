@@ -1,5 +1,6 @@
 import os
 from unittest import TestCase
+
 import pytest
 
 from ..saddlebag import Saddlebag
@@ -14,7 +15,8 @@ def setup_environment():
     os.environ['JSON_CONFIGURATION_FILES'] = test_file_path + '/json'
     os.environ['INVALID_JSON_FILES'] = test_file_path + '/invalid-json'
     os.environ['SINGLE_DOCUMENT_YAML_FILES'] = test_file_path + '/single-yaml'
-    os.environ['MULTI_DOCUMENT_YAML_FILES'] = test_file_path + '/multi-document-yaml'
+    os.environ['MULTI_DOCUMENT_YAML_FILES'] = test_file_path + \
+        '/multi-document-yaml'
     os.environ['INVALID_YAML_FILES'] = test_file_path + '/invalid-yaml'
     os.environ['DUPLICATE_CONFIGURATION_FILES'] = test_file_path + '/duplicates'
     os.environ['MISC_FILES'] = test_file_path + '/misc-files'
@@ -26,6 +28,7 @@ class TestSaddlebag(TestCase):
     """
     Exercises the functionality of the Saddlebag class.
     """
+
     def test_init_loading_of_environment(self):
         """
         The Saddlebag object constructor will load environment variables
@@ -91,9 +94,12 @@ class TestSaddlebag(TestCase):
         saddlebag = Saddlebag(['MULTI_DOCUMENT_YAML_FILES'])
 
         assert len(saddlebag['email']) == 3
-        assert saddlebag['email'][0]['Thomas'] == {'addresses': ['thomas-is-great@example.com']}
-        assert saddlebag['email'][1]['Newt'] == {'addresses': ['newt-is-great@example.com']}
-        assert saddlebag['email'][2]['Minho'] == {'addresses': ['minho-is-great@example.com']}
+        assert saddlebag['email'][0]['Thomas'] == {
+            'addresses': ['thomas-is-great@example.com']}
+        assert saddlebag['email'][1]['Newt'] == {
+            'addresses': ['newt-is-great@example.com']}
+        assert saddlebag['email'][2]['Minho'] == {
+            'addresses': ['minho-is-great@example.com']}
 
     def test__load_data_onto_attributes_with_malformed_json_files(self):
         """

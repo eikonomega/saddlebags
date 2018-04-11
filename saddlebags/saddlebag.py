@@ -16,17 +16,16 @@ SUPPORTED_FILE_TYPES = ['json', 'yaml', 'yml']
 class Saddlebag(collections.MutableMapping):
     """
     Provides access to the contents of JSON/YAML configuration
-    files and environment variables using standard object or dictionary
-    style syntax.
+    files using standard dictionary style syntax.
     """
 
     def __init__(self, configuration_locations: list=None):
         """
-        The constructor creates an top-level element on the object for each
+        The constructor creates an top-level key for each
         configuration file found in the directories specified by
         a list of environment variables.
 
-        Additionally, all read/write access to environment variables
+        Additionally read/write access to environment variables
         is available via the `env` object attribute.
 
         Args:
@@ -38,6 +37,7 @@ class Saddlebag(collections.MutableMapping):
         if not configuration_locations:
             configuration_locations = []
 
+        # Obtain list of all support configuration files.
         configuration_files = (
             self._configuration_files(configuration_locations))
 
